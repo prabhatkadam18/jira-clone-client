@@ -58,23 +58,42 @@ export const move = (
   return result;
 };
 
-export const moveElements = ({ phaseId, taskId }) => {
+export const moveElementsAPICall = ({
+  sourcePhaseId,
+  destinationPhaseId,
+  taskId,
+  sourceIndex,
+  destinationIndex,
+}) => {
   return new Promise((resolve, reject) => {
     fetch(`${domain}/tasks/move`, {
       method: "POST",
       body: JSON.stringify({
-        phaseId,
+        sourcePhaseId,
+        destinationPhaseId,
         taskId,
+        sourceIndex,
+        destinationIndex,
       }),
       headers: {
         "Content-Type": "application/json",
       },
-    }).then((data, err) => {
+    }).then((_, err) => {
       if (err) {
         console.error(err);
         return reject("Something went wrong while moving elements");
       }
-      resolve(data.json());
+      resolve();
     });
+  });
+};
+
+export const formatPhases = ({ phases }) => {
+  // only use task ids in phases
+  return phases.map((phase) => {
+    return {
+      ...phase,
+      tasks: phase.tasks.map((task) => task.id),
+    };
   });
 };

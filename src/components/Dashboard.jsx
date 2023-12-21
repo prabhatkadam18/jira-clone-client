@@ -3,7 +3,7 @@ import Phase from "./Phase";
 import {
   getPhases,
   getTasks,
-  moveElements,
+  moveElementsAPICall,
   reorderElements,
 } from "../utils/commons";
 import styled from "styled-components";
@@ -45,7 +45,6 @@ const Dashboard = () => {
 
   const onDragEnd = (result) => {
     const { source, destination } = result;
-    console.log(source, destination);
 
     if (!destination) {
       return;
@@ -58,6 +57,7 @@ const Dashboard = () => {
     }
 
     if (sInd === dInd) {
+      // reordering across same phase
       const phaseIndex = phases.findIndex((phase) => phase.id === sInd);
       if (phaseIndex > -1) {
         const items = reorderElements(
@@ -70,6 +70,7 @@ const Dashboard = () => {
         dispatch(setPhases(newState));
       }
     } else {
+      // moving across phases
       const sourcePhaseIndex = phases.findIndex((phase) => phase.id === sInd);
       const destinationPhaseIndex = phases.findIndex(
         (phase) => phase.id === dInd
@@ -85,6 +86,16 @@ const Dashboard = () => {
       newState[destinationPhaseIndex].tasks = result[dInd];
       dispatch(setPhases(newState));
     }
+
+    const sourcePhaseIndex = phases.findIndex((phase) => phase.id === sInd);
+
+    moveElementsAPICall({
+      sourcePhaseId: sInd,
+      destinationPhaseId: dInd,
+      taskId: phases[sourcePhaseIndex]?.tasks?.[source.index]?.id,
+      sourceIndex: source.index,
+      destinationIndex: destination.index,
+    });
   };
 
   return (

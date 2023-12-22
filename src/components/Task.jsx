@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { Badge } from "@mantine/core";
 import { parseDate } from "../utils/commons";
-import classes from "../styles/Task.module.css";
+import classes from "../styles/Styles.module.css";
 import { Draggable } from "react-beautiful-dnd";
 
 const Task = ({ task, index, color }) => {
@@ -22,7 +22,7 @@ const Task = ({ task, index, color }) => {
             <Badge
               size="lg"
               classNames={{
-                root: classes.root,
+                root: classes.task,
               }}
             >
               {parseDate(task.createdOn)}
@@ -40,9 +40,9 @@ const TaskWrapper = styled.div`
   background-color: white;
   flex-direction: column;
   border-radius: 5px;
-  //   margin-bottom: 0.7rem;
   box-shadow: 0 0 20px rgba(230, 230, 230, 0.1);
   position: relative;
+  cursor: grab;
 `;
 
 const Title = styled.div`

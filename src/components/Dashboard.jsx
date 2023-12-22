@@ -1,39 +1,31 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Phase from "./Phase";
 import {
   getPhases,
   getTasks,
+  move,
   moveElementsAPICall,
   reorderElements,
 } from "../utils/commons";
 import styled from "styled-components";
 import { DragDropContext } from "react-beautiful-dnd";
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
-import { setPhases, setTasks } from "../features/data/dataSlice";
+import { useSelector, useDispatch } from "react-redux";
+import { setPhases, setTasks } from "../features/common/dataSlice";
 import { cloneDeep } from "lodash";
+import Searchbar from "./Searchbar";
+import { useError } from "../hooks/useError";
+import ErrorDialog from "./ErrorDialog";
 
-const move = (source, destination, droppableSource, droppableDestination) => {
-  const sourceClone = Array.from(source);
-  const destClone = Array.from(destination);
-  const [removed] = sourceClone.splice(droppableSource.index, 1);
-
-  destClone.splice(droppableDestination.index, 0, removed);
-
-  const result = {};
-  result[droppableSource.droppableId] = sourceClone;
-  result[droppableDestination.droppableId] = destClone;
-
-  return result;
-};
 const Dashboard = () => {
   //   const [phases, setPhases] = useState([]);
 
   const dispatch = useDispatch();
+  const { showError } = useError();
 
   useEffect(() => {
     getPhases().then((data) => {
       dispatch(setPhases(data));
+      //   dispatch(setFilteredPhases(data));
     });
     getTasks().then((data) => {
       dispatch(setTasks(data));
@@ -41,9 +33,15 @@ const Dashboard = () => {
   }, []);
 
   const phases = useSelector((state) => state.data.phases);
-  //   const tasks = useSelector((state) => state.data.tasks);
+  const isFiltered = useSelector((state) => state.ui.isFiltered);
+  const errorMessage = useSelector((state) => state.ui.error);
 
+  // drag and drop
   const onDragEnd = (result) => {
+    if (isFiltered) {
+      showError("Cannot move tasks in filtered view");
+      return;
+    }
     const { source, destination } = result;
 
     if (!destination) {
@@ -100,20 +98,32 @@ const Dashboard = () => {
 
   return (
     <Wrapper>
-      <DragDropContext onDragEnd={onDragEnd}>
-        {phases?.map((phase) => (
-          <Phase key={phase.id} phase={phase} />
-        ))}
-      </DragDropContext>
+      <Searchbar />
+      <PhaseWrapper>
+        <DragDropContext onDragEnd={onDragEnd}>
+          {phases?.map((phase) => (
+            <Phase key={phase.id} phase={phase} />
+          ))}
+        </DragDropContext>
+      </PhaseWrapper>
+      <ErrorDialog message={errorMessage} />
     </Wrapper>
   );
 };
 
-const Wrapper = styled.div`
+const PhaseWrapper = styled.div`
   display: flex;
   flex-direction: row;
+  width: 82rem;
+  margin: 10px auto;
+`;
+
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  margin: 20px auto;
   max-width: 82rem;
-  margin: 30px auto;
 `;
 
 export default Dashboard;

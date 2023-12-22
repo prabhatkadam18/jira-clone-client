@@ -1,0 +1,18 @@
+.task {
+	background: #F5F5FA;
+	color: #4A505C;
+	margin: 0 1rem 1.6rem;
+	font-size: 0.7rem;
+}
+
+.advancedSearchIcon {
+	cursor: pointer;
+}
+
+.errorWrapper {
+	width: auto;
+}
+
+.errorIcon {
+	margin-right: 0.3rem;
+}

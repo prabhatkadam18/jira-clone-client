@@ -6,14 +6,18 @@ import { useSelector } from "react-redux";
 const Phase = ({ phase }) => {
   const { title, id, color } = phase;
 
-  const tasks = useSelector(
-    (state) => state.data.phases.find((p) => p.id === id).tasks
-  );
+  const tasks = useSelector((state) => {
+    if (state.ui.isFiltered) {
+      return state.data.filteredPhases.find((p) => p.id === id)?.tasks || [];
+    } else {
+      return state.data.phases.find((p) => p.id === id)?.tasks || [];
+    }
+  });
 
   return (
     <PhaseWrapper className="phase">
       <Badge size="lg" color={color}>
-        {title}
+        {title} ({tasks.length})
       </Badge>
       <TaskList phaseId={id} color={color} taskList={tasks} />
     </PhaseWrapper>

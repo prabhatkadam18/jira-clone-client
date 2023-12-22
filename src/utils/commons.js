@@ -97,3 +97,19 @@ export const formatPhases = ({ phases }) => {
     };
   });
 };
+
+export const searchTasksAPI = ({ title, phaseId }) => {
+  return new Promise((resolve, reject) => {
+    fetch(
+      `${domain}/phases/search?${title ? `taskTitle=${title}&` : ""}${
+        phaseId?.length > 0 ? `phaseId=${phaseId}` : ""
+      }`
+    ).then((data) => {
+      if (data) {
+        resolve(data.json());
+      } else {
+        reject("Something went wrong while searching tasks");
+      }
+    });
+  });
+};

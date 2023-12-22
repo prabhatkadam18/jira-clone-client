@@ -5,6 +5,7 @@ export const dataSlice = createSlice({
   initialState: {
     phases: [],
     tasks: [],
+    filteredPhases: [],
   },
   reducers: {
     setPhases: (state, action) => {
@@ -13,9 +14,12 @@ export const dataSlice = createSlice({
     setTasks: (state, action) => {
       state.tasks = action.payload;
     },
+    setFilteredPhases: (state, action) => {
+      state.filteredPhases = action.payload;
+    },
   },
 });
 
-export const { setPhases, setTasks } = dataSlice.actions;
+export const { setPhases, setTasks, setFilteredPhases } = dataSlice.actions;
 
 export default dataSlice.reducer;

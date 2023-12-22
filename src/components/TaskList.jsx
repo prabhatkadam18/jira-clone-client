@@ -29,6 +29,8 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   margin-top: 2rem;
+  height: 78vh;
+  overflow: auto;
 `;
 
 export default TaskList;
